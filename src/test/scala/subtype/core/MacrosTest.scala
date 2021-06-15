@@ -15,7 +15,18 @@ class MacrosTest extends AnyFlatSpec with Matchers {
   it should "thrown compile error with incorrect email for Email type" in {
     assertDoesNotCompile("""val x: Email = "not_email"""")
   }
+
+  it should "convert types in runtime" in {
+    val x: String = "email@test.com"
+    val y: Email = RuntimeConversions.unsafeConvert[String, Email](x)
+    assert(x == y)
+  }
+
+  it should "fail on converting types not matching condition in runtime" in {
+    val x: String = "not_email"
+    assertThrows[IllegalArgumentException] {
+      val y: Email = RuntimeConversions.unsafeConvert[String, Email](x)
+    }
+  }
 }
-git remote add origin git@github.com:szymon-rd/subtypez.git
-git branch -M master
-git push -u origin master
+
